@@ -1,0 +1,146 @@
+@require: code
+@require: annot
+@require: enumitem/enumitem
+@require: class-slydifi/theme/plain
+
+let-inline ctx \link ?:it url =
+  let ctx2 = ctx |> set-text-color (SlydifiColor.html-color 0x8F3F71) in
+  let ctx-link = match it with
+    | None    -> ctx2 |> set-font Latin (`lmmono`, 1.0, 0.0)
+                      |> set-font-size (get-font-size ctx)
+    | Some(v) -> ctx2
+  in
+  let text = match it with
+    | None    -> (embed-string url)
+    | Some(v) -> v
+  in
+  read-inline ctx-link {\href(url){#text;}}
+
+let-block +listing item = '<
+	+Enumitem.listing?:(
+		Enumitem.change-by-depth [
+			Enumitem.bullet;
+			Enumitem.white-bullet;
+		]
+	)(item);
+>
+
+let () = Enumitem.label-width-ratio |> EnumitemParam.set 3.0
+let () = Enumitem.item-indent-ratio |> EnumitemParam.set 2.0
+
+in
+
+
+SlydifiPlain.document(|
+  draft-mode = false;
+|)'<
+	+make-title(|
+		title = {|これからの\SATySFi;に望むこと|};
+		author = {|\@Nmatician|};
+		date = {|2021年6月26日|};
+	|);
+	
+	+section{|はじめに|}<	
+		+frame{自己紹介}<
+			+listing{
+				* Twitter: \link?:({\@Nmatician})(`https://twitter.com/Nmatician`);
+				* Github: \link?:({enunun})(`https://github.com/enunun`);
+				* 材料系修士卒（非情報系かつ非プログラマ）
+				* ソフトウェア開発に関しては素人
+					** Githubのページにはろくなものはない
+				* （今のところ）\SATySFi;のエンドユーザー
+					** 本格的に触りだしておよそ1ヶ月
+				* \LaTeX;と\SATySFi;を反復横跳び
+					** \LaTeX;とはそれなりに長い付き合い
+			}
+		>
+		+frame{\LaTeX;と\SATySFi;}<
+			+listing{
+				* \SATySFi;は\TeX;/\LaTeX;と比較して優位な点も多い
+					** 事前の型検査によるエラー報告の精密さ
+					** ライセンスがめんどくさくない
+				* 特に\emph{パッケージ開発のしやすさ}はトッテモスバラシイ
+					** 名前空間の分離
+					** 「第0引数」による周辺の文脈の利用
+					** 便利なローカル変数
+				* 「巨人」たる\LaTeX;を参考にした部分は多い
+					** これは変えたほうがいいのでは？と思う部分もそれなりに
+			}
+		>
+	>
+	+section{|開発側に望むこと|}<
+		+frame{文書構造の記述方法}<
+			+listing{
+				* 文書構造は見出しの名前で記述
+					** `+chapter`，`+section`，`+p`等
+				* 文書構造だけではなく「そのレベルの呼び名」も含む
+				* 各レベルの「呼び名」は文書構造の記述には不要では？
+					** 従属関係のみが本質的なはず
+				* Markdownでは「`#`」の数で表現
+					** じゃあMarkdown使えば？→表現能力
+				* あと`+p`するのがめんどくさい（本音）
+				* パッケージ製作者にも多大な影響
+					** `v.0.x`の今のうちに
+			}
+		>
+		+frame{相互参照の名前空間の分離}<
+			+listing{
+				* 相互参照はキーと番号の対応を読み取ってなされる
+					** `.satysfi-aux`ファイルにキーと番号の対応が記録
+				* 「図」や「定理」等の型は記録されず
+					** 自動補完させたいときに非常に面倒
+				* \LaTeX;では`cleveref`パッケージが有名
+					** 読み込み時は`\label`コマンドにオプション引数が追加
+					** 識別子の名前空間の分離が可能
+				* 要するに`cleveref`パッケージ相当の機能が欲しい
+					** プリミティブでインターフェース提供？
+			}
+		>
+		
+	>
+	+section{|コミュニティに望むこと|}<
+		+frame{パッケージ開発のノウハウ共有}<
+			+listing{
+				* \LaTeX;における悲劇その1：`titlesec`パッケージ
+					** 節見出しの体裁を変える\emph{パッケージ}
+					** 節見出しはドキュメントクラス担当のハズ・・・
+				* \LaTeX;における悲劇その2：`authblk`パッケージ
+					** 複数著者や所属の記述に対応する\emph{パッケージ}
+					** `hyperref`パッケージのオプションと衝突
+				* ドキュメントクラスの該当部分を`\renewcommand`で解決（？）
+				* 目次の体裁だともっと面倒
+				* ドキュメントクラスに関する知識があれば\emph{自力}で解決可能
+					** 気軽に開発に関われる土壌づくりが重要
+			}
+		>
+		+frame{ソースの軽率な公開}<
+			+listing{
+				* \SATySFi;はまだパッケージが少ない
+					** 欲しい機能は自分で実装する必要
+					** しかしどうやればいいかわからない・・・
+					** ソースがなければ解決した人がいてもパクれない
+				* Githubにあるのはパッケージとそのドキュメントが中心
+					** もっと実践的な文書作成例が必要
+				* お前らPDFだけ挙げるなソースも挙げろ
+					** 例：\link(`https://github.com/enunun/quoset`);
+					** このスライドも (\link(`https://github.com/enunun/satyconf2021`);)
+					** これだけでコミュニティに貢献できる（後述）
+			}
+		>
+		+frame{ソースの公開先}<
+			+listing{
+				* 今のところGithubがおすすめ
+					** 個人で文書を書くだけなので`add`，`commit`，`push`でOK
+					** \SATySFi;は現在linguistのサポート外
+					** ユニークなリポジトリ数が不足
+				* 怪文書を作ってリポジトリを作るだけでコミュニティに貢献！
+					** このスライドも貢献にカウント（たぶん）
+				* 挙げるときはライセンスをちゃんと書こう
+					** MITライセンスがおすすめ
+					** コードをコピペしたときはコピペ元のライセンスに注意
+			}
+		>
+	>
+	+section{|Let's \SATySFi;!!|}<
+	>
+>
