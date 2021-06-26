@@ -1,7 +1,7 @@
 @require: code
 @require: annot
 @require: enumitem/enumitem
-@require: class-slydifi/theme/plain
+@require: class-slydifi/theme/akasaka
 
 let-inline ctx \link ?:it url =
   let ctx2 = ctx |> set-text-color (SlydifiColor.html-color 0x8F3F71) in
@@ -31,8 +31,9 @@ let () = Enumitem.item-indent-ratio |> EnumitemParam.set 2.0
 in
 
 
-SlydifiPlain.document(|
-  draft-mode = false;
+SlydifiAkasaka.document(|
+	draft-mode = false;
+	header-text = None;
 |)'<
 	+make-title(|
 		title = {|これからの\SATySFi;に望むこと|};
@@ -89,32 +90,35 @@ SlydifiPlain.document(|
 					** `.satysfi-aux`ファイルにキーと番号の対応が記録
 				* 「図」や「定理」等の型は記録されず
 					** 自動補完させたいときに非常に面倒
+					** 同じ数式でも「式」と「力学系」みたく分けたい場合も
 				* \LaTeX;では`cleveref`パッケージが有名
 					** 読み込み時は`\label`コマンドにオプション引数が追加
-					** 識別子の名前空間の分離が可能
+					** キーの名前空間を分離できる
 				* 要するに`cleveref`パッケージ相当の機能が欲しい
-					** プリミティブでインターフェース提供？
+					** どのレベルで実装？
+					** プリミティブか？クラスファイルか？
 			}
 		>
 		
 	>
-	+section{|コミュニティに望むこと|}<
+	+section{|コミュニティ側に望むこと|}<
 		+frame{開発ノウハウの共有}<
 			+p{
-				ドキュメントクラスの役割は周知されているとはいいがたい
+				文書の体裁を変えたい場合，ドキュメントクラスに手を加えるのが「表技」
 			}
 
 			+listing{
-				* \LaTeX;における悲劇その1：`titlesec`パッケージ
-					** 見出しの体裁を変える\emph{パッケージ}
-					** 見出しの体裁はドキュメントクラス担当のハズ・・・
-				* \LaTeX;における悲劇その2：`authblk`パッケージ
-					** 複数著者や所属の記述に対応する\emph{パッケージ}
-					** `hyperref`パッケージのオプションと衝突
-				* ドキュメントクラスの該当部分を`\renewcommand`で解決（？）
-				* 特に節見出しは需要に比べてあまり知られていないらしい（？）
-				* ドキュメントクラスに関する知識があれば\emph{自力}で解決可能
-					** 「知の高速道路」の重要性 
+				* \LaTeX;における悲劇（？）その1：`titlesec`パッケージ
+				* \LaTeX;における悲劇（？）その2：`authblk`パッケージ
+					** ドキュメントクラスが担当する機能をパッケージレベルで上書き
+					** いわば「裏技」
+					** 後者は`hyperref`パッケージの`pdfusetitle`オプションと衝突
+				* ドキュメントクラスに手を加えれば解決だが・・・
+					** ライトユーザーにとっては\emph{情報不足}
+					** 実装に\TeX;言語やexpl3の知識が要求される可能性
+				* \SATySFi;なら手を加えやすいはず
+					** 「手の加え方」がライトユーザーにも周知されるのが望ましい
+					** 実践的な例も欲しいよね（後述）
 			}
 		>
 		+frame{ソースの軽率な公開}<
@@ -133,7 +137,7 @@ SlydifiPlain.document(|
 		+frame{ソースの公開先}<
 			+listing{
 				* Githubがおすすめ
-					** 個人で文書を書くだけなので`add`，`commit`，`push`だけでOK
+					** 個人で文書を書くだけなら`add`，`commit`，`push`だけで十分
 				* \SATySFi;は現在linguistのサポート外
 					** ユニークなリポジトリ数が不足
 					** 怪文書を作ってリポジトリを作るだけでコミュニティに貢献！
